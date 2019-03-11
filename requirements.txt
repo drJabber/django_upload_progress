@@ -1,0 +1,8 @@
+django==2.1.7
+channels==2.1.7
+channels_redis==2.3.3
+selenium==3.141.0
+asyncio==3.4.3
+django_heroku==0.3.1
+geopy==1.18.1
+gunicorn==19.9.0

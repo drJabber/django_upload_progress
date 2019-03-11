@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+<script>
+    var chatSocket = new WebSocket('ws://' + window.location.host +'/ws/prog/');
+
+    chatSocket.onopen=function(e){
+        {% for file in files %}
+        send_upload_message({{ file.index}}, '{{ file.name }}');
+        {% endfor %}
+    }
+
+    chatSocket.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+        var id = data['id'].toString();
+        var progress=data['progress'].toString();
+        var state=data['state'];
+        if (state!='complete'){
+            $('#file_'+id).text(progress+'%');
+        }else{
+            $('#file_'+id).text('COMPLETE');
+        }
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    //upload message:
+    //'id' - file id
+    //'filename' - uploaded file name
+    //'type' = upload command
+    function send_upload_message(index, filename){
+        chatSocket.send(JSON.stringify({'type':'upload','id':index,'filename':filename}));
+    }
+
+
+</script>
+    <table>
+        <tr>
+            <th width="40%"">
+                file
+            </th>
+            <th width="10%">
+                progress
+            </th>
+        </tr>
+        {% for file in files %}
+        <tr>
+            <td>
+                {{ file.name }}:
+            </td>
+            <td>
+                <div id="file_{{ file.index }}">0%</div>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock content %}

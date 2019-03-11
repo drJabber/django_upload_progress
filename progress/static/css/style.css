@@ -1,0 +1,131 @@
+.header table {
+    border: 1px solid green;
+    border-spacing: 10px;
+    width: 100%;
+}
+
+.header th, tr {
+    padding: 10px;
+    border: 1px solid white;
+}
+
+
+
+#mapAndChartBox{
+    margin: 5px;
+    height: 700px;
+    width: 100%;
+}
+
+
+#mapBox{
+    height: 700px;
+    width: 29%;
+    float: left;
+}
+
+
+#mapid{ 
+    height: 670px;
+    width: 100%;
+    float: left;
+}
+#mapCtrl{
+    height: 30px;
+    width: 100%;
+    float: left;
+}
+#mapCtrl table{
+    
+    width: 100%;
+    float: left;
+}
+#mapCtrl td{
+    width: 16%;
+    float: left;
+}
+button.mapbtn{
+    width: 100%;
+}
+
+
+
+
+
+
+
+#chartBox{
+    height: 700px;
+    width: 69%;
+    float: left;
+}
+
+
+
+#slidebar{
+    height: 30px;
+    width: 100%;
+    float:left;
+}
+#slidebar table {  
+    width: 100%;
+    float: left;
+}
+
+#slidebar td {
+    width: 25%;
+}
+
+#allCharts{
+    height: 670px;
+    width: 100%;
+    float: left;
+}
+
+#allCharts .chart{
+    height: 670px;
+}
+
+button.bchart {
+    width: 100%
+}
+
+
+
+
+
+
+.leaflet-pulsing-icon {
+    border-radius: 100%;
+    box-shadow: 1px 1px 8px 0 rgba(0,0,0,0.75);
+}
+
+.leaflet-pulsing-icon:after {
+    content: "";
+    border-radius: 100%;
+    height: 300%;
+    width: 300%;
+    position: absolute;
+    margin: -100% 0 0 -100%;
+
+}
+
+@keyframes pulsate {
+    0% {
+        transform: scale(0.1, 0.1);
+        opacity: 0;
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+        filter: alpha(opacity=0);
+    }
+    50% {
+        opacity: 1;
+        -ms-filter: none;
+        filter: none;
+    }
+    100% {
+        transform: scale(1.2, 1.2);
+        opacity: 0;
+        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+        filter: alpha(opacity=0);
+    }
+}

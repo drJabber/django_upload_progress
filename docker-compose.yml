@@ -1,0 +1,27 @@
+version: '3.1'
+
+services:
+  redis:
+    image: redis:5.0
+
+  django:
+    build:
+      context: .
+      dockerfile: ./docker/django/Dockerfile
+    depends_on:
+      - redis
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    command: python manage.py runserver 0.0.0.0:8000
+
+  django-progress:
+    build:
+      context: .
+      dockerfile: ./docker/django/Dockerfile
+    depends_on:
+      - redis
+    volumes:
+      - .:/app
+    command: python manage.py runworker progress_worker

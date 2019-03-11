@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Gis_project</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+        <script type="text/javascript" src="{% static 'js/jquery-3.3.1.js' %}"></script>
+
+        {% block map %}
+        {% endblock map %}
+    </head>
+
+    <div class="header">
+        <table>
+                <tr>
+                    <th width="20%">Gis_project</th>
+                    <th>
+                        <table>
+                            <tr>
+                                <th width="30%"><a href="/upload">Загрузить</a></th>
+                                <th width="30%"><a href="/parse">Разобрать</a></th>   
+                                <th width="30%"><a href="/list">Список</a></th>   
+                            </tr>
+                        </table>
+                    </th>
+                </tr>
+        </table>
+    </div>
+
+
+    <body>
+        {% block content %}
+        {% endblock content %}
+    </body>
+</html>
+        

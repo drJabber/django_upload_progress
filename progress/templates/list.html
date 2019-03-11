@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+    {% for file in files %}
+
+        <h6><a href="/map/{{file.id}}">{{ file.name }}</a></h6>
+
+    {% endfor %}
+{% endblock content %}
