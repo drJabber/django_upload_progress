@@ -4,13 +4,13 @@ from time import sleep
 from .models import FileInfo, Node
 from geopy.distance import distance
 from django.contrib.gis.geos import Point,MultiPoint,GeometryCollection
+from asgiref.sync import sync_to_async
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class LineParser():
 
     async def parse(self, line, prevData):
-
         values = line.split("##")
 
         date = values[0].rstrip('\t').split('-')
@@ -37,12 +37,17 @@ class LineParser():
             else:
                 data[pair[0]] = pair[1].rstrip('\n')    
 
-            await sleep(0)        
+            sync_to_async(sleep(0))        
 
-        dist=0
         if (prevData):
-            dist=distance(prevData, data['GPS'])
-            data['dist']=prevData['dist']+abs(dist)
+            print('prevData:',prevData['GPS'], ', dist=',prevData['dist'])
+            # print('data:',data['GPS'], ' , dist=',data['dist'])
+            dist=distance(prevData['GPS'], data['GPS'])
+            print('delta=',dist, ', total=',prevData['dist']+abs(dist).m)
+            data['dist']=prevData['dist']+abs(dist.m)
+        else:
+            data['dist']=0
+            print('prevData:',data['GPS'], ', dist=',data['dist'])
 
 
         return tag, data
@@ -53,7 +58,7 @@ class Parser():
         lines=0
         while readline():
             lines+=1
-            await sleep(0)
+            sync_to_async(sleep(0))
         return lines    
 
 
@@ -66,32 +71,34 @@ class Parser():
         newDirName = os.path.join(BASE_DIR, 'info/old/')
         fullPath=os.path.join(dirName, filename)
 
-        with open(fullPath,'r+') as text:
+        with open(fullPath,'r+b') as text:
             print(fullPath)
-            buffer=mmap.mmap(text.fileno,0)
+            buffer=mmap.mmap(text.fileno(),0,prot=mmap.PROT_READ)
 
             fileDate = filename.rstrip('.txt').split('-')
-            date = date[1] + '-' + date[2] + '-' + date[3] + ' ' + date[4] + ':' + date[5] 
+            date = fileDate[1] + '-' + fileDate[2] + '-' + fileDate[3] + ' ' + fileDate[4] + ':' + fileDate[5] 
             File = FileInfo.objects.create(name=filename, date=date)
 
             lineIdx=0
 
             lines=await self.linesCount(buffer)+1
+            buffer.seek(0)
+            print(lines)
             lineParser=LineParser()
             data=None
-            for line in mmap:
-                tag, data =await lineParser.parse(line,data) #returns DateTimeTag and dict of values
+            for line in iter(buffer.readline,b""):
+                tag, data =await lineParser.parse(line.decode('UTF8'),data) #returns DateTimeTag and dict of values
                 lineIdx+=1
 
                 if data:
                     row = Node.objects.create(dateTimeLabel=tag, fileInfo=File, **data)
-
-                await channel_layer.send(reply_channel,{
-                    'type':'worker_progress',
-                    'id':fileid,
-                    'progress': 100*lineIdx//lines,
-                    'state' : 'incomplete'
-                })
+                    if (lineIdx%100==0):
+                        await channel_layer.send(reply_channel,{
+                            'type':'worker_progress',
+                            'id':fileid,
+                            'progress': 100*lineIdx//lines,
+                            'state' : 'incomplete'
+                        })
 
             os.rename(dirName+filename, newDirName+filename)
 

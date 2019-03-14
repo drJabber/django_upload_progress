@@ -41,5 +41,5 @@ class WSConsumer(AsyncWebsocketConsumer):
     #message['progress'] - progress value of workers task
     #message['state'] - state of workers task: 'in progress', 'complete'
     async def worker_progress(self, message):
-        print('progress:'+str(message['id'])+', progress='+str(message['progress']))
+        # print('progress:'+str(message['id'])+', progress='+str(message['progress']))
         await self.send(text_data=json.dumps(message))
