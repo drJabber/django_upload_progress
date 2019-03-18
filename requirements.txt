@@ -1,3 +1,4 @@
+psycopg2-binary==2.7.7
 django==2.1.7
 channels==2.1.7
 channels_redis==2.3.3

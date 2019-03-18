@@ -1,6 +1,10 @@
 FROM python:3.7
 
+
 ENV PYTHONUNBUFFERED 1
+
+RUN apt update 
+RUN apt install -y binutils libproj-dev gdal-bin
 
 COPY ./requirements.txt /requirements.txt
 RUN pip install --upgrade pip

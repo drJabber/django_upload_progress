@@ -38,13 +38,17 @@ DATA_UPLOAD_MAX_MEMORY_SIZE=20000000
 
 DATABASES = {
     'default': {
-    # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    'ENGINE': 'django.contrib.gis.db.backends.postgis',
-    'NAME':	'progress',
-	'USER': 'postgres',
-	'PASSWORD': 'postgres',
-	'HOST': '127.0.0.1',
-    'PORT': '5432',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        # 'NAME':	'postgres',
+        # 'USER': 'postgres',
+        # 'PASSWORD': 'postgres',
+        # 'HOST': 'localhost',
+        # 'PORT': '5432',
+        'NAME':	'pgdb',
+        'USER': 'drjabber',
+        'PASSWORD': '1',
+        'HOST': 'pgdb',
+        'PORT': '5432',
     }
 }
 
@@ -73,7 +77,8 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("localhost", 6379)],
+            "hosts": [("redis", 6379)],
+            # "hosts": [("localhost", 6379)],
         }
     },
 }
