@@ -32,6 +32,9 @@ services:
     ports:
       - "8000:8000"
     command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      - DJANGO_DEBUG=false
+      - DJANGO_SECRET_KEY 
 
   progress-worker1:
     build:
@@ -44,6 +47,9 @@ services:
     volumes:
       - .:/app
     command: python manage.py runworker -v3 --traceback progress-worker
+    environment:
+      - DJANGO_DEBUG=false
+      - DJANGO_SECRET_KEY 
 
   progress-worker2:
     build:
@@ -68,3 +74,6 @@ services:
     volumes:
       - .:/app
     command: python manage.py runworker -v3 --traceback progress-worker
+    environment:
+      - DJANGO_DEBUG=false
+      - DJANGO_SECRET_KEY 

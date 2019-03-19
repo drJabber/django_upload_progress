@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.contrib.gis.db.models import Extent, GeometryField,PointField
@@ -42,19 +42,20 @@ def uploadFile(request):
         if form.is_valid():
 
             if  FileInfo.objects.filter(name=request.FILES['file'].name).exists():
-                return HttpResponse('File already in DB')
-
+                request.session['result_msg']='Upload failed - file already in DB'
+                return redirect(request.path_info)
             else:
                 uploader = Uploader()
                 path = os.path.join(BASE_DIR, 'info/') + request.FILES['file'].name
                 uploader.upload(request.FILES['file'], path)
-                return HttpResponse('Good')
+                request.session['result_msg']='Upload Ok'
+                return redirect(request.path_info)
 
     else:
 
         form = UploadForm()
-
-    return render(request, 'upload.html', {'form': form})
+    print(request.session.get('result_msg','Empty msg'))
+    return render(request, 'upload.html', {'form': form, 'result_msg': request.session.get('result_msg','')})
 
 
 
