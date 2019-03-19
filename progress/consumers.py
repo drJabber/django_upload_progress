@@ -32,7 +32,6 @@ class WSConsumer(AsyncWebsocketConsumer):
             }
         )
 
-    #send task to free worker, set its state to 'busy'
     async def send_task_to_worker(self,task):
         await self.channel_layer.send('progress-worker',task)
 

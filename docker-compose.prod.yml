@@ -1,0 +1,82 @@
+version: '3.1'
+
+services:
+  pgdb:
+    build:
+      context: .
+      dockerfile: ./docker/postgis/Dockerfile
+    image: progress_pgdb:latest
+    container_name: db
+    environment:
+      POSTGRES_DB: pgdb
+      POSTGRES_USER: drjabber
+      POSTGRES_PASSWORD: 1
+
+    ports:
+      - "15432:5432"
+
+  redis:
+    image: redis:5.0
+    container_name: redis
+
+  django:
+    build:
+      context: .
+      dockerfile: ./docker/django/Dockerfile
+    container_name: django
+    depends_on:
+      - redis
+      - pgdb
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    command: /app/entrypoint-interface.sh
+    environment:
+      - DJANGO_DEBUG=false
+      - DJANGO_SECRET_KEY 
+
+  progress-worker1:
+    build:
+      context: .
+      dockerfile: ./docker/django/Dockerfile
+    container_name: worker1
+    depends_on:
+      - redis
+      - pgdb
+    volumes:
+      - .:/app
+    command: /app/entrypoint-worker.sh
+    environment:
+      - DJANGO_DEBUG=false
+      - DJANGO_SECRET_KEY 
+
+  progress-worker2:
+    build:
+      context: .
+      dockerfile: ./docker/django/Dockerfile
+    container_name: worker2
+    depends_on:
+      - redis
+      - pgdb
+    volumes:
+      - .:/app
+    command: /app/entrypoint-worker.sh
+    environment:
+      - DJANGO_DEBUG=false
+      - DJANGO_SECRET_KEY 
+
+  progress-worker3:
+    build:
+      context: .
+      dockerfile: ./docker/django/Dockerfile
+    container_name: worker3
+    depends_on:
+      - redis
+      - pgdb
+    volumes:
+      - .:/app
+    command: /app/entrypoint-worker.sh
+    environment:
+      - DJANGO_DEBUG=false
+      - DJANGO_SECRET_KEY 
