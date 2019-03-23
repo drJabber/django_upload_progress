@@ -18,6 +18,8 @@ services:
   redis:
     image: redis:5.0
     container_name: redis
+    depends_on: 
+      - pgdb
 
   django:
     build:

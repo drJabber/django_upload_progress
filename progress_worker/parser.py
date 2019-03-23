@@ -17,7 +17,6 @@ class LineParser():
         tag = date[0] + '-' + date[1] + '-' + date[2] + ' ' + date[3] + ':' + date[4] + ':' + date[5]
 
         values = values[1].split(";")
-        print(values)
 
         data = {}
         for value in values:
@@ -40,14 +39,10 @@ class LineParser():
             sync_to_async(sleep(0))        
 
         if (prevData):
-            print('prevData:',prevData['GPS'], ', dist=',prevData['dist'])
-            # print('data:',data['GPS'], ' , dist=',data['dist'])
             dist=distance(prevData['GPS'], data['GPS'])
-            print('delta=',dist, ', total=',prevData['dist']+abs(dist).m)
             data['dist']=prevData['dist']+abs(dist.m)
         else:
             data['dist']=0
-            print('prevData:',data['GPS'], ', dist=',data['dist'])
 
 
         return tag, data
@@ -58,8 +53,29 @@ class Parser():
         lines=0
         while readline():
             lines+=1
-            sync_to_async(sleep(0))
+            # sync_to_async(sleep(0.001))
         return lines    
+
+
+    async def count_lines(self, message, channel_layer):
+        reply_channel=message['reply-channel']
+        filename=message['filename']
+        fileid=message['id']
+
+        dirName = os.path.join(BASE_DIR, 'info/')
+        newDirName = os.path.join(BASE_DIR, 'info/old/')
+        fullPath=os.path.join(dirName, filename)
+
+        with open(fullPath,'r+b') as text:
+            buffer=mmap.mmap(text.fileno(),0,prot=mmap.PROT_READ)
+
+            lines=await self.linesCount(buffer)+1
+
+            await channel_layer.send(reply_channel,{
+                'type':'worker_prepared',
+                'id':fileid,
+                'lines': lines,
+            })
 
 
     async def parse(self, message, channel_layer):

@@ -8,8 +8,9 @@
 
     chatSocket.onopen=function(e){
         {% for file in files %}
-        send_upload_message({{ file.index}}, '{{ file.name }}');
+        send_collect_message({{ file.index}}, '{{ file.name }}');
         {% endfor %}
+        send_upload_message();
     }
 
     chatSocket.onmessage = function(e) {
@@ -29,12 +30,21 @@
         console.error('Chat socket closed unexpectedly');
     };
 
-    //upload message:
+    //collect message:
     //'id' - file id
     //'filename' - uploaded file name
-    //'type' = upload command
-    function send_upload_message(index, filename){
-        chatSocket.send(JSON.stringify({'type':'upload','id':index,'filename':filename}));
+    //'type' = command
+    function send_collect_message(index, filename){
+        console.log(index,':',filename);
+        chatSocket.send(JSON.stringify({'type':'collect','id':index,'filename':filename}));
+    }
+
+    //uploadmessage:
+    //'id' - file id
+    //'filename' - uploaded file name
+    //'type' = command
+    function send_upload_message(){
+        chatSocket.send(JSON.stringify({'type':'upload'}));
     }
 
 
