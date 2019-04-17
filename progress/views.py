@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, StreamingHttpResponse
 from django.core.paginator import Paginator
 from django.contrib.gis.db.models import Extent, GeometryField,PointField
 from django.contrib.gis.geos import Point,MultiPoint,GeometryCollection
@@ -12,6 +12,8 @@ from geopy.distance import distance
 from .additionals import Uploader
 from progress_worker.models import FileInfo, Node
 from .forms import UploadForm
+from PIL import Image
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -70,3 +72,17 @@ def listFiles(request):
 
 def hello(request):
     return render(request, 'start.html')
+
+
+def loadPicture(request):
+    path = os.path.join(BASE_DIR, 'info/')+'404.png'
+    img=Image.open(path)
+
+    alpha = Image.new('L', img.size, 128)
+    img.putalpha(alpha)
+
+
+    response=HttpResponse(content_type='application/octet-stream')
+    
+    img.save(response,"png")
+    return response

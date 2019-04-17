@@ -6,5 +6,6 @@ urlpatterns = [
     url(r'^parse/$',view=views.testPars,name='parse'),
     url(r'^upload/$',view=views.uploadFile,name='upload'),
     url(r'^list/$',view=views.listFiles,name='list'),
+    url(r'^pict/$',view=views.loadPicture,name='pict'),
     
 ]
